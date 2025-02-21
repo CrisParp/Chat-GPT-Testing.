@@ -1,14 +1,19 @@
-* {
+body, html {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-body {
     overflow: hidden;
-    background: black;
+    width: 100%;
+    height: 100%;
 }
 
 canvas {
     display: block;
+    background: linear-gradient(135deg, #ff8c00, #e52e71, #4a00e0, #00b4db);
+    background-size: 400% 400%;
+    animation: gradientShift 10s infinite alternate ease-in-out;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
 }

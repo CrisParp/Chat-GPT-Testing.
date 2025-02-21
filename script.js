@@ -1,51 +1,53 @@
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const particles = [];
+let stars = [];
 
-class Particle {
-    constructor(x, y, size, speedX, speedY, color) {
+class Star {
+    constructor(x, y, radius, speed) {
         this.x = x;
         this.y = y;
-        this.size = size;
-        this.speedX = speedX;
-        this.speedY = speedY;
-        this.color = color;
+        this.radius = radius;
+        this.speed = speed;
+        this.opacity = Math.random() * 0.8 + 0.2;
     }
-    update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
-        if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
-    }
+
     draw() {
-        ctx.fillStyle = this.color;
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
         ctx.fill();
+        ctx.closePath();
+    }
+
+    update() {
+        this.y += this.speed;
+        if (this.y > canvas.height) {
+            this.y = 0 - this.radius;
+            this.x = Math.random() * canvas.width;
+        }
+        this.opacity = Math.random() * 0.5 + 0.5;
     }
 }
 
 function init() {
-    for (let i = 0; i < 100; i++) {
-        const size = Math.random() * 3 + 1;
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        const speedX = (Math.random() - 0.5) * 2;
-        const speedY = (Math.random() - 0.5) * 2;
-        const color = `hsl(${Math.random() * 360}, 100%, 70%)`;
-        particles.push(new Particle(x, y, size, speedX, speedY, color));
+    for (let i = 0; i < 150; i++) {
+        let radius = Math.random() * 2;
+        let x = Math.random() * canvas.width;
+        let y = Math.random() * canvas.height;
+        let speed = Math.random() * 1 + 0.2;
+        stars.push(new Star(x, y, radius, speed));
     }
 }
 
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(particle => {
-        particle.update();
-        particle.draw();
+    stars.forEach(star => {
+        star.update();
+        star.draw();
     });
     requestAnimationFrame(animate);
 }
@@ -53,6 +55,8 @@ function animate() {
 window.addEventListener("resize", () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    stars = [];
+    init();
 });
 
 init();
